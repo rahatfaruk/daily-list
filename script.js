@@ -15,7 +15,7 @@ function addTodoUI(todo) {
   const todoHtml = `
     <li class="bg-gray-200 px-2 rounded-lg flex items-center" data-id=${todo.id}>
       <input type="checkbox" name="done" class="mx-2 hover:cursor-pointer" ${todo.isDone && 'checked'}>
-      <input type="text" name="text" class="flex-1 bg-transparent px-2 py-2" value=${todo.text}>
+      <input type="text" name="text" class="flex-1 bg-transparent px-2 py-2" value="${todo.text}">
       <button class="edit-btn bg-green-30 px-3 py-2 hover:opacity-75"><i class="bi bi-pencil-square pointer-events-none"></i></button>
       <button class="delete-btn text-red-600 px-3 py-2 hover:opacity-75"><i class="bi bi-trash-fill pointer-events-none"></i></button>
     </li>
