@@ -1,8 +1,33 @@
 const addTodoForm = document.querySelector('.add-item')
 const todoList = document.querySelector('.todo-list')
 
-const todos = []
+let todos;
 
+// local-storage
+function setTodosLS() {
+  localStorage.setItem('daily-list', JSON.stringify(todos))
+}
+function getTodosLS() {
+  return JSON.parse(localStorage.getItem('daily-list'))
+}
+
+function addTodoUI(todo) {
+  const todoHtml = `
+    <li class="bg-gray-200 px-2 rounded-lg flex items-center" data-id=${todo.id}>
+      <input type="checkbox" name="done" class="mx-2 hover:cursor-pointer" ${todo.isDone && 'checked'}>
+      <input type="text" name="text" class="flex-1 bg-transparent px-2 py-2" value=${todo.text}>
+      <button class="edit-btn bg-green-30 px-3 py-2 hover:opacity-75"><i class="bi bi-pencil-square pointer-events-none"></i></button>
+      <button class="delete-btn text-red-600 px-3 py-2 hover:opacity-75"><i class="bi bi-trash-fill pointer-events-none"></i></button>
+    </li>
+  `
+  todoList.insertAdjacentHTML('beforeend', todoHtml)
+}
+
+// ## get prev stored todos on page load 
+window.addEventListener('DOMContentLoaded', () => {
+  todos = getTodosLS() ? getTodosLS() : []
+  todos.map(todo => addTodoUI(todo))
+})
 
 // ## add new todo
 addTodoForm.addEventListener('submit',  e => {
@@ -15,16 +40,9 @@ addTodoForm.addEventListener('submit',  e => {
   }
 
   const newTodo = {id: `${Date.now()}`, text: todoText, isDone: false}
-  const todoHtml = `
-    <li class="bg-gray-200 px-2 rounded-lg flex items-center" data-id=${newTodo.id}>
-      <input type="checkbox" name="done" class="mx-2 hover:cursor-pointer" ${newTodo.isDone && 'checked'}>
-      <input type="text" name="text" class="flex-1 bg-transparent px-2 py-2" value=${newTodo.text}>
-      <button class="edit-btn bg-green-30 px-3 py-2 hover:opacity-75"><i class="bi bi-pencil-square pointer-events-none"></i></button>
-      <button class="delete-btn text-red-600 px-3 py-2 hover:opacity-75"><i class="bi bi-trash-fill pointer-events-none"></i></button>
-    </li>
-  `
-  todoList.insertAdjacentHTML('beforeend', todoHtml)
+  addTodoUI(newTodo)
   todos.push(newTodo)
+  setTodosLS()
 })
 
 // ## clicked inside todo
@@ -34,6 +52,7 @@ todoList.addEventListener('click', e => {
     const todoEl = e.target.parentElement
     todos.splice(todos.findIndex(todo => todo.id === todoEl.dataset.id), 1)
     todoEl.remove()
+    setTodosLS()
   }
 
   // ### update todo: check/uncheck
@@ -41,6 +60,7 @@ todoList.addEventListener('click', e => {
     // Note: checkbox ui aumatically get updated
     const todoId = e.target.parentElement.dataset.id
     todos.find(todo => todo.id === todoId).isDone = e.target.checked
+    setTodosLS()
   }
 
   // ## update todo: text
@@ -48,6 +68,7 @@ todoList.addEventListener('click', e => {
     const newText = e.target.previousElementSibling.value
     const todoId = e.target.parentElement.dataset.id
     todos.find(todo => todo.id === todoId).text = newText
+    setTodosLS()
   }
 
 })
