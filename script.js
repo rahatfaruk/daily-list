@@ -26,13 +26,14 @@ function addTodoUI(todo) {
 // ## get prev stored todos on page load 
 window.addEventListener('DOMContentLoaded', () => {
   todos = getTodosLS() ? getTodosLS() : []
-  todos.map(todo => addTodoUI(todo))
+  todos.forEach(todo => addTodoUI(todo))
 })
 
 // ## add new todo
 addTodoForm.addEventListener('submit',  e => {
   e.preventDefault()
   const todoText = addTodoForm['add-text'].value.trim()
+  addTodoForm.reset()
 
   if (todoText.length === 0) {
     alert('enter some text')
